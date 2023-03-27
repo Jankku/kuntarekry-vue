@@ -3,6 +3,10 @@ import PageContainer from '@/components/PageContainer.vue';
 import type { JobAdvertisement } from '@/types';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { useRoute, useRouter } from 'vue-router';
+import dayjs from 'dayjs';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+
+dayjs.extend(LocalizedFormat);
 
 const route = useRoute();
 const router = useRouter();
@@ -26,7 +30,16 @@ const { data, isLoading, isError } = useQuery({
       <div class="gridContainer">
         <button @click="() => router.back()" class="backButton">Back</button>
         <div class="content">
-          <h1 class="title">{{ data.jobAdvertisement?.title }}</h1>
+          <div class="header">
+            <p class="employer">{{ data.jobAdvertisement?.profitCenter }}</p>
+            <h1 class="title">{{ data.jobAdvertisement?.title }}</h1>
+            <p class="date">
+              {{ dayjs(data.jobAdvertisement.publicationStarts).format('L') }}—{{
+                dayjs(data.jobAdvertisement.publicationEnds).format('L')
+              }}
+            </p>
+          </div>
+
           <p class="description">{{ data.jobAdvertisement?.jobDesc }}</p>
         </div>
       </div>
@@ -53,9 +66,22 @@ const { data, isLoading, isError } = useQuery({
   grid-column: 1;
 }
 
+.header {
+  padding-bottom: 1em;
+}
+
+.employer {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
 .title {
   line-height: 1;
-  padding-bottom: 1em;
+  padding-bottom: 0.3em;
+}
+
+.date {
+  opacity: 0.8;
 }
 
 .description {
