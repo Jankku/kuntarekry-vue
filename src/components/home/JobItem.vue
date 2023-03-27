@@ -1,0 +1,38 @@
+<script setup lang="ts">
+import type { JobAdvertisement } from '@/types';
+
+defineProps<{
+  job: JobAdvertisement;
+}>();
+</script>
+
+<template>
+  <router-link :to="`/${job.jobAdvertisement.id}`" class="link">
+    <div class="card">
+      <p class="title">{{ job.jobAdvertisement?.title.slice(0, 50) }}</p>
+      <p class="desc">{{ job.jobAdvertisement?.jobDesc?.slice(0, 100) }}...</p>
+    </div>
+  </router-link>
+</template>
+
+<style scoped>
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+.card {
+  min-height: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #505050;
+  padding: 1rem;
+}
+
+.card:hover {
+  border: 1px solid #aaa;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+</style>
