@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import JobItem from '@/components/home/JobItem.vue';
+import { useJobs } from '@/api/usejobs';
+import JobItem from '@/components/JobItem.vue';
 import PageContainer from '@/components/PageContainer.vue';
-import type { JobAdvertisement } from '@/types';
-import { useQuery } from '@tanstack/vue-query';
-import axios from '../axios';
 
-const getJobAds = async (): Promise<JobAdvertisement[]> => {
-  const response = await axios.get('/portal-api/recruitment/open-jobs');
-  return response.data.jobAdvertisements.slice(0, 50);
-};
-
-const { data, isLoading, isError } = useQuery({ queryKey: ['jobs'], queryFn: getJobAds });
+const { data, isLoading, isError } = useJobs();
 </script>
 
 <template>

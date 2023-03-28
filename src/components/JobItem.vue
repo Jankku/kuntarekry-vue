@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { JobAdvertisement } from '@/types';
+import type { Job } from '@/api/usejobs';
 
 defineProps<{
-  job: JobAdvertisement;
+  job: Job;
 }>();
 </script>
 
@@ -10,8 +10,8 @@ defineProps<{
   <router-link :to="`/${job.jobAdvertisement.id}`" class="link">
     <div class="card">
       <p class="employer">{{ job.jobAdvertisement?.profitCenter }}</p>
-      <p class="title">{{ job.jobAdvertisement?.title.slice(0, 50) }}</p>
-      <p class="desc">{{ job.jobAdvertisement?.jobDesc?.slice(0, 100) }}...</p>
+      <p class="title">{{ job.jobAdvertisement.title.slice(0, 50) }}</p>
+      <p class="desc">{{ job.jobAdvertisement.jobDesc?.slice(0, 100) }}...</p>
     </div>
   </router-link>
 </template>
@@ -35,6 +35,7 @@ defineProps<{
 
 .employer {
   opacity: 0.8;
+  font-size: 1rem;
 }
 
 .title {

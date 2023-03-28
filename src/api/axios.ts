@@ -10,7 +10,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   async (req) => {
-    req.url = `${req.url}?client=${import.meta.env.VITE_KUNTAREKRY_CLIENT_ID}`;
+    req.params = { ...req.params, client: import.meta.env.VITE_KUNTAREKRY_CLIENT_ID };
     return req;
   },
   async (err: unknown) => Promise.reject(err)

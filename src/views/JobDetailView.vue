@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import PageContainer from '@/components/PageContainer.vue';
-import type { JobAdvertisement } from '@/types';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+import type { Job } from '@/api/usejobs';
+import BackButton from '@/components/BackButton.vue';
 
 dayjs.extend(LocalizedFormat);
 
 const route = useRoute();
-const router = useRouter();
 const queryClient = useQueryClient();
 
 const { data, isLoading, isError } = useQuery({
   staleTime: Infinity,
   queryKey: ['job', route.params.id],
-  initialData: (queryClient.getQueryData(['jobs']) as JobAdvertisement[]).find(
-    (job: JobAdvertisement) => job.jobAdvertisement?.id === route.params.id
+  initialData: (queryClient.getQueryData(['jobs']) as Job[]).find(
+    (job: Job) => job.jobAdvertisement?.id === route.params.id
   ),
 });
 </script>
@@ -28,7 +28,9 @@ const { data, isLoading, isError } = useQuery({
     <p v-else-if="!data">Job not found</p>
     <div v-else>
       <div class="gridContainer">
-        <button @click="() => router.back()" class="backButton">Back</button>
+        <div class="backButton">
+          <BackButton />
+        </div>
         <div class="content">
           <div class="header">
             <p class="employer">{{ data.jobAdvertisement?.profitCenter }}</p>
