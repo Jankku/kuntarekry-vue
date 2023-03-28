@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, RouterView } from 'vue-router';
+import { h } from 'vue';
 import JobListView from '../views/JobListView.vue';
 
 const router = createRouter({
@@ -16,12 +17,19 @@ const router = createRouter({
     {
       path: '/',
       name: 'jobs',
-      component: JobListView,
-    },
-    {
-      path: '/:id',
-      name: 'details',
-      component: () => import('../views/JobDetailView.vue'),
+      component: { render: () => h(RouterView) },
+      children: [
+        {
+          path: '',
+          name: 'jobs',
+          component: JobListView,
+        },
+        {
+          path: ':id',
+          name: 'details',
+          component: () => import('../views/JobDetailView.vue'),
+        },
+      ],
     },
     {
       path: '/regions',
