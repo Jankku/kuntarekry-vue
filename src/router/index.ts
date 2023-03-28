@@ -3,6 +3,15 @@ import JobListView from '../views/JobListView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    if (from.name === 'details' && to.name === 'jobs') {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ ...savedPosition, behavior: 'smooth' });
+        }, 300);
+      });
+    }
+  },
   routes: [
     {
       path: '/',
