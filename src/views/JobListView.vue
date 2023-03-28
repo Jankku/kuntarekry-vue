@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useJobs } from '@/api/usejobs';
 import JobItem from '@/components/JobItem.vue';
-import PageContainer from '@/components/PageContainer.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import { computed, ref } from 'vue';
 
@@ -21,19 +20,17 @@ const filteredJobs = computed(() => {
 </script>
 
 <template>
-  <PageContainer>
-    <h1 class="title">Jobs</h1>
-    <SearchInput v-model="searchQuery" :disabled="filteredJobs?.length === 0" />
-    <p v-if="isLoading">Loading...</p>
-    <p v-else-if="isError">Error loading jobs</p>
-    <div v-else>
-      <div class="jobContainer">
-        <transition-group name="jobs" :css="false">
-          <JobItem v-for="job in filteredJobs" :job="job" :key="job.jobAdvertisement.id" />
-        </transition-group>
-      </div>
+  <h1 class="title">Jobs</h1>
+  <SearchInput v-model="searchQuery" :disabled="filteredJobs?.length === 0" />
+  <p v-if="isLoading">Loading...</p>
+  <p v-else-if="isError">Error loading jobs</p>
+  <div v-else>
+    <div class="jobContainer">
+      <transition-group name="jobs" :css="false">
+        <JobItem v-for="job in filteredJobs" :job="job" :key="job.jobAdvertisement.id" />
+      </transition-group>
     </div>
-  </PageContainer>
+  </div>
 </template>
 
 <style scoped>

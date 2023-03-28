@@ -1,13 +1,21 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Navbar from './components/Navbar.vue';
+import PageContainer from './components/PageContainer.vue';
+</script>
 
 <template>
-  <router-view v-slot="{ Component, route }">
-    <transition name="fade" mode="out-in">
+  <PageContainer>
+    <Navbar />
+    <router-view v-slot="{ Component, route }">
       <keep-alive>
-        <component :is="Component" :key="route.path" />
+        <transition name="fade" mode="out-in">
+          <div :key="route.path">
+            <component :is="Component" />
+          </div>
+        </transition>
       </keep-alive>
-    </transition>
-  </router-view>
+    </router-view>
+  </PageContainer>
 </template>
 
 <style scoped>

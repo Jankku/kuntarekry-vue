@@ -8,6 +8,6 @@
 main {
   max-width: 768px;
   margin: 0 auto;
-  padding: 1em 0em;
+  padding-bottom: 1em;
 }
 </style>

@@ -22,31 +22,29 @@ const { data, isLoading, isError } = useQuery({
 </script>
 
 <template>
-  <PageContainer>
-    <p v-if="isLoading">Loading...</p>
-    <p v-if="isError">Error loading job</p>
-    <p v-else-if="!data">Job not found</p>
-    <div v-else>
-      <div class="gridContainer">
-        <div class="backButton">
-          <BackButton />
+  <p v-if="isLoading">Loading...</p>
+  <p v-if="isError">Error loading job</p>
+  <p v-else-if="!data">Job not found</p>
+  <div v-else>
+    <div class="gridContainer">
+      <div class="backButton">
+        <BackButton />
+      </div>
+      <div class="content">
+        <div class="header">
+          <p class="employer">{{ data.jobAdvertisement?.profitCenter }}</p>
+          <h1 class="title">{{ data.jobAdvertisement?.title }}</h1>
+          <p class="date">
+            {{ dayjs(data.jobAdvertisement.publicationStarts).format('L') }}—{{
+              dayjs(data.jobAdvertisement.publicationEnds).format('L')
+            }}
+          </p>
         </div>
-        <div class="content">
-          <div class="header">
-            <p class="employer">{{ data.jobAdvertisement?.profitCenter }}</p>
-            <h1 class="title">{{ data.jobAdvertisement?.title }}</h1>
-            <p class="date">
-              {{ dayjs(data.jobAdvertisement.publicationStarts).format('L') }}—{{
-                dayjs(data.jobAdvertisement.publicationEnds).format('L')
-              }}
-            </p>
-          </div>
 
-          <p class="description">{{ data.jobAdvertisement?.jobDesc }}</p>
-        </div>
+        <p class="description">{{ data.jobAdvertisement?.jobDesc }}</p>
       </div>
     </div>
-  </PageContainer>
+  </div>
 </template>
 
 <style>
