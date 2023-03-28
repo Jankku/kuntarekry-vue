@@ -11,7 +11,7 @@ defineProps<{
     <div class="card">
       <p class="employer">{{ job.jobAdvertisement?.profitCenter }}</p>
       <p class="title">{{ job.jobAdvertisement.title.slice(0, 50) }}</p>
-      <p class="desc">{{ job.jobAdvertisement.jobDesc?.slice(0, 100) }}...</p>
+      <p class="description">{{ job.jobAdvertisement.jobDesc?.slice(0, 100) }}...</p>
     </div>
   </router-link>
 </template>
@@ -23,10 +23,13 @@ defineProps<{
 }
 
 .card {
+  display: flex;
+  flex-flow: column;
   min-height: 100%;
-  border-radius: 0.5rem;
+  width: 100%;
+  border-radius: 0.5em;
   border: 1px solid #505050;
-  padding: 1rem;
+  padding: 1em;
 }
 
 .card:hover {
@@ -35,12 +38,12 @@ defineProps<{
 
 .employer {
   opacity: 0.8;
-  font-size: 1rem;
 }
 
 .title {
   font-size: 1.2rem;
-  font-weight: 600;
-  padding-bottom: 0.3em;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
