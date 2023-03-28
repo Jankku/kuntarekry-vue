@@ -8,14 +8,16 @@ import { computed, ref } from 'vue';
 const { data, isLoading, isError } = useJobs();
 
 const searchQuery = ref('');
-const filteredJobs = computed(
-  () =>
+const filteredJobs = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase();
+  return (
     data.value?.filter(
       (job) =>
-        job.jobAdvertisement.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        job.jobAdvertisement.profitCenter?.toLowerCase().includes(searchQuery.value.toLowerCase())
+        job.jobAdvertisement.title.toLowerCase().includes(query) ||
+        job.jobAdvertisement.profitCenter?.toLowerCase().includes(query)
     ) ?? data.value
-);
+  );
+});
 </script>
 
 <template>
@@ -26,7 +28,9 @@ const filteredJobs = computed(
     <p v-else-if="isError">Error loading jobs</p>
     <div v-else>
       <div class="jobContainer">
-        <JobItem v-for="(job, index) in filteredJobs" :job="job" :key="index" />
+        <transition-group name="jobs" :css="false">
+          <JobItem v-for="job in filteredJobs" :job="job" :key="job.jobAdvertisement.id" />
+        </transition-group>
       </div>
     </div>
   </PageContainer>
@@ -48,5 +52,20 @@ const filteredJobs = computed(
   grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
   justify-content: center;
   gap: 0.5em;
+}
+
+.jobs-move,
+.jobs-enter-active,
+.jobs-leave-active {
+  transition: all 0.5s ease;
+}
+
+.jobs-enter-from,
+.jobs-leave-to {
+  opacity: 0;
+}
+
+.jobs-leave-active {
+  position: absolute;
 }
 </style>
