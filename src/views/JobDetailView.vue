@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import PageContainer from '@/components/PageContainer.vue';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import type { Job } from '@/api/usejobs';
 import BackButton from '@/components/BackButton.vue';
+import useSavedJobs from '@/data/usesavedjobs';
+import { computed } from 'vue';
+import SaveButton from '@/components/SaveButton.vue';
 
 dayjs.extend(LocalizedFormat);
 
 const route = useRoute();
 const queryClient = useQueryClient();
+const { savedJobIds, saveJob } = useSavedJobs();
 
 const { data, isLoading, isError } = useQuery({
   staleTime: Infinity,
@@ -19,6 +22,8 @@ const { data, isLoading, isError } = useQuery({
     (job: Job) => job.jobAdvertisement?.id === route.params.id
   ),
 });
+
+const isSaved = computed(() => savedJobIds.value.has(route.params.id as string));
 </script>
 
 <template>
@@ -40,7 +45,9 @@ const { data, isLoading, isError } = useQuery({
             }}
           </p>
         </div>
-
+        <SaveButton @click="() => saveJob(route.params.id as string)">
+          {{ isSaved ? 'Unsave' : 'Save' }}
+        </SaveButton>
         <p class="description">{{ data.jobAdvertisement?.jobDesc }}</p>
       </div>
     </div>
@@ -85,6 +92,7 @@ const { data, isLoading, isError } = useQuery({
 }
 
 .description {
+  padding-top: 1em;
   line-height: 1.5;
 }
 
