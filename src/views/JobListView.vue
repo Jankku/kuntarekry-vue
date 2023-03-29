@@ -29,21 +29,29 @@ const filteredJobs = computed(() => {
 </script>
 
 <template>
-  <h1 class="title">Jobs</h1>
-  <SearchInput v-model="searchQuery" :disabled="filteredJobs?.length === 0" />
-  <SavedJobsCheckbox v-model="showOnlySavedJobs" />
-  <p v-if="isLoading">Loading...</p>
-  <p v-else-if="isError">Error loading jobs</p>
-  <div v-else>
-    <div class="jobContainer">
-      <transition-group name="jobs" :css="false">
-        <JobItem v-for="job in filteredJobs" :job="job" :key="job.jobAdvertisement.id" />
-      </transition-group>
+  <div class="container">
+    <h1 class="title">Jobs</h1>
+    <SearchInput v-model="searchQuery" :disabled="filteredJobs?.length === 0" />
+    <SavedJobsCheckbox v-model="showOnlySavedJobs" />
+    <p v-if="isLoading">Loading...</p>
+    <p v-else-if="isError">Error loading jobs</p>
+    <div v-else>
+      <div class="jobContainer">
+        <transition-group name="jobs" :css="false">
+          <JobItem v-for="job in filteredJobs" :job="job" :key="job.jobAdvertisement.id" />
+        </transition-group>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 1em;
+  }
+}
+
 .title {
   padding-bottom: 1em;
 }
