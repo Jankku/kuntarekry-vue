@@ -4,6 +4,7 @@ import { debounce } from '@/util';
 defineProps<{ modelValue: string; disabled: boolean }>();
 const emit = defineEmits<{
   (event: 'update:modelValue', value: string): void;
+  (event: 'blur'): void;
 }>();
 
 const debouncedOnChange = debounce((value: string) => {
@@ -12,7 +13,7 @@ const debouncedOnChange = debounce((value: string) => {
 </script>
 
 <template>
-  <input type="search" placeholder="Search jobs..." :value="modelValue"
+  <input type="search" placeholder="Search jobs..." :value="modelValue" @blur="emit('blur')"
   @input="debouncedOnChange(($event.target as HTMLInputElement).value)" disabled:="disabled" />
 </template>
 

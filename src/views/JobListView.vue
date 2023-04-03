@@ -17,23 +17,27 @@ const { savedJobIds } = useSavedJobs();
 const filteredJobs = useFilterJobs(data, searchQuery, showOnlySavedJobs, savedJobIds);
 const pagination = usePagination(filteredJobs, 9);
 
-const onPreviousPage = () => {
-  if (pagination.currentPage > 1) {
-    pagination.currentPage--;
-  }
-};
-
-const onNextPage = () => {
-  if (pagination.currentPage < pagination.pageCount) {
-    pagination.currentPage++;
-  }
-};
-
-watch(showOnlySavedJobs, () => {
+const pageBoundaryCheck = () => {
   if (pagination.currentPage > pagination.pageCount) {
     pagination.currentPage = pagination.pageCount;
   }
-});
+
+  if (pagination.currentPage <= 0) {
+    pagination.currentPage = 1;
+  }
+};
+
+const onPreviousPage = () => {
+  pagination.currentPage--;
+  pageBoundaryCheck();
+};
+
+const onNextPage = () => {
+  pagination.currentPage++;
+  pageBoundaryCheck();
+};
+
+watch(showOnlySavedJobs, pageBoundaryCheck);
 </script>
 
 <template>
@@ -41,7 +45,11 @@ watch(showOnlySavedJobs, () => {
     <h1 class="title">Jobs</h1>
 
     <div class="header">
-      <SearchInput v-model="searchQuery" :disabled="filteredJobs?.length === 0" />
+      <SearchInput
+        v-model="searchQuery"
+        :disabled="filteredJobs?.length === 0"
+        @blur="pageBoundaryCheck"
+      />
       <SavedJobsCheckbox v-model="showOnlySavedJobs" />
       <PaginationControls
         :currentPage="pagination.currentPage"
