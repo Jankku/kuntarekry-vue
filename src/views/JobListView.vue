@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useJobs } from '@/api/usejobs';
 import JobItem from '@/components/JobItem.vue';
 import SavedJobsCheckbox from '@/components/SavedJobsCheckbox.vue';
@@ -28,6 +28,12 @@ const onNextPage = () => {
     pagination.currentPage++;
   }
 };
+
+watch(showOnlySavedJobs, () => {
+  if (pagination.currentPage > pagination.pageCount) {
+    pagination.currentPage = pagination.pageCount;
+  }
+});
 </script>
 
 <template>
