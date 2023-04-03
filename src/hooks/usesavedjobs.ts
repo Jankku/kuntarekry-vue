@@ -3,7 +3,7 @@ import { ref, watchEffect } from 'vue';
 const SAVED_JOBS_KEY = 'kuntarekry_saved_jobs';
 
 export default function useSavedJobs() {
-  const savedJobIds = ref(new Set());
+  const savedJobIds = ref(new Set<string>());
 
   watchEffect(() => {
     const jobsJson = localStorage.getItem(SAVED_JOBS_KEY) ?? '[]';

@@ -1,44 +1,58 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue';
 import { useJobs } from '@/api/usejobs';
 import JobItem from '@/components/JobItem.vue';
 import SavedJobsCheckbox from '@/components/SavedJobsCheckbox.vue';
 import SearchInput from '@/components/SearchInput.vue';
-import useSavedJobs from '@/data/usesavedjobs';
-import { computed, ref } from 'vue';
-
-const { data, isLoading, isError } = useJobs();
-const { savedJobIds } = useSavedJobs();
+import useSavedJobs from '@/hooks/usesavedjobs';
+import usePagination from '@/hooks/usepagination';
+import useFilterJobs from '@/hooks/usefilterjobs';
 
 const showOnlySavedJobs = ref(false);
 const searchQuery = ref('');
 
-const filteredJobs = computed(() => {
-  const query = searchQuery.value.trim().toLowerCase();
-  const results = data.value?.filter(
-    (job) =>
-      job.jobAdvertisement.title.toLowerCase().includes(query) ||
-      job.jobAdvertisement.profitCenter?.toLowerCase().includes(query)
-  );
+const { data, isLoading, isError } = useJobs();
+const { savedJobIds } = useSavedJobs();
+const filteredJobs = useFilterJobs(data, searchQuery, showOnlySavedJobs, savedJobIds);
+const pagination = usePagination(filteredJobs, 9);
 
-  if (showOnlySavedJobs.value) {
-    return results?.filter((job) => savedJobIds.value.has(job.jobAdvertisement.id));
-  } else {
-    return results;
+const onPreviousPage = () => {
+  if (pagination.currentPage > 1) {
+    pagination.currentPage--;
   }
+};
+
+const onNextPage = () => {
+  if (pagination.currentPage < pagination.pageCount) {
+    pagination.currentPage++;
+  }
+};
+
+const pageIndicator = computed(() => {
+  return `${pagination.currentPage}/${pagination.pageCount}`;
 });
 </script>
 
 <template>
   <div class="container">
     <h1 class="title">Jobs</h1>
+
     <SearchInput v-model="searchQuery" :disabled="filteredJobs?.length === 0" />
+    <p>{{ pageIndicator }}</p>
+    <button @click="onPreviousPage">Previous page</button>
+    <button @click="onNextPage">Next page</button>
     <SavedJobsCheckbox v-model="showOnlySavedJobs" />
+
     <p v-if="isLoading">Loading...</p>
     <p v-else-if="isError">Error loading jobs</p>
     <div v-else>
       <div class="jobContainer">
         <transition-group name="jobs" :css="false">
-          <JobItem v-for="job in filteredJobs" :job="job" :key="job.jobAdvertisement.id" />
+          <JobItem
+            v-for="job in pagination.currentItems"
+            :job="job"
+            :key="job.jobAdvertisement.id"
+          />
         </transition-group>
       </div>
     </div>

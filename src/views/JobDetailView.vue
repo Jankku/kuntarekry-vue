@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import type { Job } from '@/api/usejobs';
 import BackButton from '@/components/BackButton.vue';
-import useSavedJobs from '@/data/usesavedjobs';
+import useSavedJobs from '@/hooks/usesavedjobs';
 import { computed } from 'vue';
 import SaveButton from '@/components/SaveButton.vue';
 
