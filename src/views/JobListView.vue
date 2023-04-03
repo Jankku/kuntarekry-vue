@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useJobs } from '@/api/usejobs';
 import JobItem from '@/components/JobItem.vue';
 import SavedJobsCheckbox from '@/components/SavedJobsCheckbox.vue';
@@ -7,6 +7,7 @@ import SearchInput from '@/components/SearchInput.vue';
 import useSavedJobs from '@/hooks/usesavedjobs';
 import usePagination from '@/hooks/usepagination';
 import useFilterJobs from '@/hooks/usefilterjobs';
+import PaginationControls from '@/components/PaginationControls.vue';
 
 const showOnlySavedJobs = ref(false);
 const searchQuery = ref('');
@@ -27,21 +28,22 @@ const onNextPage = () => {
     pagination.currentPage++;
   }
 };
-
-const pageIndicator = computed(() => {
-  return `${pagination.currentPage}/${pagination.pageCount}`;
-});
 </script>
 
 <template>
   <div class="container">
     <h1 class="title">Jobs</h1>
 
-    <SearchInput v-model="searchQuery" :disabled="filteredJobs?.length === 0" />
-    <p>{{ pageIndicator }}</p>
-    <button @click="onPreviousPage">Previous page</button>
-    <button @click="onNextPage">Next page</button>
-    <SavedJobsCheckbox v-model="showOnlySavedJobs" />
+    <div class="header">
+      <SearchInput v-model="searchQuery" :disabled="filteredJobs?.length === 0" />
+      <SavedJobsCheckbox v-model="showOnlySavedJobs" />
+      <PaginationControls
+        :currentPage="pagination.currentPage"
+        :pageCount="pagination.pageCount"
+        @onPreviousPage="onPreviousPage"
+        @onNextPage="onNextPage"
+      />
+    </div>
 
     <p v-if="isLoading">Loading...</p>
     <p v-else-if="isError">Error loading jobs</p>
@@ -64,6 +66,14 @@ const pageIndicator = computed(() => {
   .container {
     padding: 0 1em;
   }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 1em;
+  margin-bottom: 1em;
 }
 
 .title {

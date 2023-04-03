@@ -8,18 +8,20 @@ const onToggle = (value: boolean) => emit('update:modelValue', value);
 </script>
 
 <template>
-  <label for="checkbox">Show saved only</label>
-  <input
-    type="checkbox"
-    name="checkbox"
-    id="checkbox"
-    :value="modelValue"
-    @input="onToggle(($event.target as HTMLInputElement).checked)"
-  />
+  <div>
+    <label for="checkbox">Filter saved</label>
+    <input
+      type="checkbox"
+      name="checkbox"
+      id="checkbox"
+      :value="modelValue"
+      @input="onToggle(($event.target as HTMLInputElement).checked)"
+    />
+  </div>
 </template>
 
 <style scoped>
 label {
-  margin: 1em 0.5em 0em 1em;
+  padding-right: 0.5em;
 }
 </style>

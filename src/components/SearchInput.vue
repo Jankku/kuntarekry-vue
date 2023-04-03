@@ -18,7 +18,6 @@ const debouncedOnChange = debounce((value: string) => {
 
 <style scoped>
 input {
-  margin-bottom: 1em;
   padding: 0.5em;
 }
 </style>
