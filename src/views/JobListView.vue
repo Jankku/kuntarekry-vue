@@ -2,12 +2,12 @@
 import { ref, watch } from 'vue';
 import { useJobs } from '@/api/usejobs';
 import JobItem from '@/components/JobItem.vue';
-import SavedJobsCheckbox from '@/components/SavedJobsCheckbox.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import useSavedJobs from '@/hooks/usesavedjobs';
 import usePagination from '@/hooks/usepagination';
 import useFilterJobs from '@/hooks/usefilterjobs';
 import PaginationControls from '@/components/PaginationControls.vue';
+import { AppLayout, BaseText, SwitchButton } from '@fcgtalent/meerkit';
 
 const showOnlySavedJobs = ref(false);
 const searchQuery = ref('');
@@ -37,20 +37,35 @@ const onNextPage = () => {
   pageBoundaryCheck();
 };
 
+const onSearchBlur = () => {
+  pageBoundaryCheck();
+};
+
+const onSearchClear = () => {
+  pageBoundaryCheck();
+  searchQuery.value = '';
+};
+
 watch(showOnlySavedJobs, pageBoundaryCheck);
 </script>
 
 <template>
-  <div class="container">
-    <h1 class="title">Jobs</h1>
+  <AppLayout narrow>
+    <BaseText size="xxl" heading>Jobs</BaseText>
 
     <div class="header">
       <SearchInput
         v-model="searchQuery"
         :disabled="filteredJobs?.length === 0"
-        @blur="pageBoundaryCheck"
+        @blur="onSearchBlur"
+        @clear="onSearchClear"
       />
-      <SavedJobsCheckbox v-model="showOnlySavedJobs" />
+      <SwitchButton
+        label="Filter saved"
+        name="filterSaved"
+        :checked="showOnlySavedJobs"
+        @update:checked="showOnlySavedJobs = !showOnlySavedJobs"
+      />
       <PaginationControls
         :currentPage="pagination.currentPage"
         :pageCount="pagination.pageCount"
@@ -59,8 +74,8 @@ watch(showOnlySavedJobs, pageBoundaryCheck);
       />
     </div>
 
-    <p v-if="isLoading">Loading...</p>
-    <p v-else-if="isError">Error loading jobs</p>
+    <BaseText v-if="isLoading">Loading...</BaseText>
+    <BaseText v-else-if="isError">Error loading jobs</BaseText>
     <div v-else>
       <div class="jobContainer">
         <transition-group name="jobs" :css="false">
@@ -72,32 +87,20 @@ watch(showOnlySavedJobs, pageBoundaryCheck);
         </transition-group>
       </div>
     </div>
-  </div>
+  </AppLayout>
 </template>
 
 <style scoped>
-@media screen and (max-width: 768px) {
-  .container {
-    padding: 0 1em;
-  }
-}
-
 .header {
   display: flex;
   flex-direction: column;
   align-items: start;
+  align-content: start;
+  justify-items: start;
+  justify-content: start;
+  width: fit-content;
   gap: 1em;
-  margin-bottom: 1em;
-}
-
-.title {
-  padding-bottom: 1em;
-}
-
-@media screen and (max-width: 768px) {
-  main {
-    padding: 2em;
-  }
+  margin-top: 1.5em;
 }
 
 .jobContainer {

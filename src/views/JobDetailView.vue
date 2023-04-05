@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import type { Job } from '@/api/usejobs';
-import BackButton from '@/components/BackButton.vue';
 import useSavedJobs from '@/hooks/usesavedjobs';
 import { computed } from 'vue';
-import SaveButton from '@/components/SaveButton.vue';
+import { AppLayout, BaseText, ButtonElement } from '@fcgtalent/meerkit';
 
 dayjs.extend(LocalizedFormat);
 
+const router = useRouter();
 const route = useRoute();
 const queryClient = useQueryClient();
 const { savedJobIds, saveJob } = useSavedJobs();
@@ -18,7 +18,7 @@ const { savedJobIds, saveJob } = useSavedJobs();
 const { data, isLoading, isError } = useQuery({
   staleTime: Infinity,
   queryKey: ['job', route.params.id],
-  initialData: (queryClient.getQueryData(['jobs']) as Job[]).find(
+  initialData: (queryClient.getQueryData(['jobs']) as Job[])?.find(
     (job: Job) => job.jobAdvertisement?.id === route.params.id
   ),
 });
@@ -27,45 +27,53 @@ const isSaved = computed(() => savedJobIds.value.has(route.params.id as string))
 </script>
 
 <template>
-  <p v-if="isLoading">Loading...</p>
-  <p v-if="isError">Error loading job</p>
-  <p v-else-if="!data">Job not found</p>
-  <div v-else>
-    <div class="gridContainer">
-      <div class="backButton">
-        <BackButton />
-      </div>
-      <div class="content">
-        <div class="header">
-          <p class="employer">{{ data.jobAdvertisement?.profitCenter }}</p>
-          <h1 class="title">{{ data.jobAdvertisement?.title }}</h1>
-          <p class="date">
-            {{ dayjs(data.jobAdvertisement.publicationStarts).format('L') }}—{{
-              dayjs(data.jobAdvertisement.publicationEnds).format('L')
-            }}
-          </p>
+  <AppLayout narrow>
+    <BaseText v-if="isLoading">Loading...</BaseText>
+    <BaseText v-if="isError">Error loading job</BaseText>
+    <BaseText v-else-if="!data">Job not found</BaseText>
+    <div v-else>
+      <div class="gridContainer">
+        <div class="backButton">
+          <ButtonElement
+            type="flat"
+            icon="arrow-left-3"
+            title="Back"
+            @click="() => router.back()"
+          />
         </div>
-        <SaveButton @click="() => saveJob(route.params.id as string)">
-          {{ isSaved ? 'Unsave' : 'Save' }}
-        </SaveButton>
-        <p class="description">{{ data.jobAdvertisement?.jobDesc }}</p>
+        <div class="content">
+          <div class="header">
+            <BaseText class="employer">{{ data.jobAdvertisement?.profitCenter }}</BaseText>
+            <BaseText heading size="xxl" class="title">{{ data.jobAdvertisement?.title }}</BaseText>
+            <BaseText>
+              {{ dayjs(data.jobAdvertisement.publicationStarts).format('L') }}—{{
+                dayjs(data.jobAdvertisement.publicationEnds).format('L')
+              }}
+            </BaseText>
+          </div>
+          <div class="description">
+            <ButtonElement
+              type="primary"
+              :title="isSaved ? 'Unsave' : 'Save'"
+              @click="() => saveJob(route.params.id as string)"
+            />
+            <BaseText>{{ data.jobAdvertisement?.jobDesc }}</BaseText>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </AppLayout>
 </template>
 
 <style>
 .gridContainer {
   display: grid;
   grid: 1fr;
-  padding: 1em;
 }
 
 .backButton {
-  margin: 0.5em;
   grid-row: 1;
   grid-column: 1;
-  width: min-content;
 }
 
 .content {
@@ -75,25 +83,15 @@ const isSaved = computed(() => savedJobIds.value.has(route.params.id as string))
 
 .header {
   padding-bottom: 1em;
-}
-
-.employer {
-  font-size: 1.2rem;
-  opacity: 0.8;
-}
-
-.title {
-  line-height: 1;
-  padding-bottom: 0.3em;
-}
-
-.date {
-  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
 }
 
 .description {
-  padding-top: 1em;
-  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 
 @media screen and (min-width: 768px) {
@@ -103,7 +101,6 @@ const isSaved = computed(() => savedJobIds.value.has(route.params.id as string))
   }
 
   .backButton {
-    margin: 0.5em;
     grid-row: 1;
     grid-column: 1;
   }

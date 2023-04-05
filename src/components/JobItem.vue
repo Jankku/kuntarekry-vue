@@ -1,49 +1,41 @@
 <script setup lang="ts">
 import type { Job } from '@/api/usejobs';
+import { BaseCard, BaseText } from '@fcgtalent/meerkit';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   job: Job;
 }>();
+
+const title = computed(() => props.job.jobAdvertisement.title?.slice(0, 50) ?? 'Ei otsikkoa');
+const employer = computed(() => props.job.jobAdvertisement.profitCenter ?? 'Ei työnantajaa');
+
+const jobDesc = computed(() => props.job.jobAdvertisement.jobDesc);
+const description = computed(() =>
+  jobDesc.value ? `${jobDesc.value.slice(0, 100)}...` : 'Ei kuvausta'
+);
 </script>
 
 <template>
-  <router-link :to="`/${job.jobAdvertisement.id}`" class="link">
-    <div class="card">
-      <p class="employer">{{ job.jobAdvertisement?.profitCenter }}</p>
-      <p class="title">{{ job.jobAdvertisement.title.slice(0, 50) }}</p>
-      <p class="description">{{ job.jobAdvertisement.jobDesc?.slice(0, 100) }}...</p>
-    </div>
-  </router-link>
+  <BaseCard :to="`/${job.jobAdvertisement.id}`">
+    <template #header>
+      <div class="contentContainer">
+        <BaseText heading class="title">{{ title }}</BaseText>
+        <BaseText size="sm" class="employer">{{ employer }}</BaseText>
+        <BaseText class="description">{{ description }}</BaseText>
+      </div>
+    </template>
+  </BaseCard>
 </template>
 
 <style scoped>
-.link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.card {
-  display: flex;
-  flex-flow: column;
-  min-height: 100%;
-  width: 100%;
-  border-radius: 0.5em;
-  border: 1px solid #505050;
-  padding: 1em;
-}
-
-.card:hover {
-  border: 1px solid #aaa;
-}
-
 .employer {
-  opacity: 0.8;
+  padding-bottom: 0.5em;
 }
-
-.title {
-  font-size: 1.2rem;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 </style>

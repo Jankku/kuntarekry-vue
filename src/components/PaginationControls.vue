@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ButtonResponsive, NumberBadge } from '@fcgtalent/meerkit';
 
 const props = defineProps<{
   currentPage: number;
@@ -10,29 +10,12 @@ const emit = defineEmits<{
   (event: 'onPreviousPage'): void;
   (event: 'onNextPage'): void;
 }>();
-
-const pageIndicator = computed(() => {
-  return `Page ${props.currentPage}/${props.pageCount}`;
-});
 </script>
 
 <template>
   <div>
-    <button @click="emit('onPreviousPage')">⬅️</button>
-    <button @click="emit('onNextPage')">➡️</button>
-    <p>{{ pageIndicator }}</p>
+    <ButtonResponsive title="Previous page" icon="arrow-left-3" @click="emit('onPreviousPage')" />
+    <ButtonResponsive title="Next page" icon="arrow-right-3" @click="emit('onNextPage')" />
+    <NumberBadge :count="props.currentPage" :total="props.pageCount" />
   </div>
 </template>
-
-<style scoped>
-div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25em;
-}
-p {
-  font-weight: 500;
-  padding: 0.2em;
-}
-</style>

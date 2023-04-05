@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Region } from '@/api/useregions';
+import { BaseText } from '@fcgtalent/meerkit';
 
 defineProps<{
   region: Region;
@@ -7,16 +8,12 @@ defineProps<{
 </script>
 
 <template>
-  <p>{{ region.name }}</p>
+  <BaseText heading>{{ region.name }}</BaseText>
   <ul>
     <li v-for="child in region.childs" :key="child.id">
-      {{ child.name }}
+      <BaseText dense>
+        {{ child.name }}
+      </BaseText>
     </li>
   </ul>
 </template>
-
-<style scoped>
-ul {
-  margin-left: 1em;
-}
-</style>
