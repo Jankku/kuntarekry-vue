@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useJobs } from '@/api/usejobs';
 import JobItem from '@/components/JobItem.vue';
 import SearchInput from '@/components/SearchInput.vue';
@@ -16,6 +16,7 @@ const { data, isLoading, isError } = useJobs();
 const { savedJobIds } = useSavedJobs();
 const filteredJobs = useFilterJobs(data, searchQuery, showOnlySavedJobs, savedJobIds);
 const pagination = usePagination(filteredJobs, 9);
+const jobCount = computed(() => filteredJobs.value?.length ?? 0);
 
 const pageBoundaryCheck = () => {
   if (pagination.currentPage > pagination.pageCount) {
@@ -51,7 +52,7 @@ watch(showOnlySavedJobs, pageBoundaryCheck);
 
 <template>
   <AppLayout narrow>
-    <BaseText size="xxl" heading>Jobs</BaseText>
+    <BaseText size="xxl" heading>Jobs ({{ jobCount }})</BaseText>
 
     <div class="header">
       <SearchInput
