@@ -17,9 +17,9 @@ const RegionArray = z.array(Region);
 export type Region = z.infer<typeof Region>;
 
 const getRegions = async (): Promise<Region[]> => {
-  const response = await axios.get('/portal-api/recruitment/params/hierarchy/locations');
   try {
-    const regions = RegionArray.parse(response.data.locations);
+    const response = await axios.get('/portal-api/recruitment/params/hierarchy/locations');
+    const regions = RegionArray.parseAsync(response.data.locations);
     return regions;
   } catch (error) {
     console.error(error);

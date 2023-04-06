@@ -8,6 +8,7 @@ const Job = z.object({
     title: z.string().optional(),
     jobDesc: z.string().optional(),
     profitCenter: z.string().optional(),
+    location: z.string().optional(),
     publicationStarts: z.string(),
     publicationEnds: z.string(),
   }),
